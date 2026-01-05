@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "name": "源代码文档同步",
+  "description": "监听Python源代码文件、配置文件和重要项目文件的变化，当这些文件被修改时，自动要求AI代理更新README.md或docs文件夹中的相关文档，确保文档与代码保持同步",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "*.py",
+      "*.yaml",
+      "*.yml",
+      "*.ini",
+      "*.json",
+      "requirements.txt",
+      "config.py",
+      "conftest.py",
+      "pytest.ini"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "检测到源代码或配置文件发生变化。请分析修改的内容，然后相应地更新项目文档：\n\n1. 如果是核心功能代码变化，请更新README.md中的功能说明部分\n2. 如果是配置文件变化，请更新相关的配置说明文档\n3. 如果是新增模块或重要功能，请在docs/文件夹中创建或更新对应的文档\n4. 如果是API或接口变化，请更新相关的使用说明\n\n请确保：\n- 文档使用中文编写（遵循chinese-first原则）\n- 包含具体的使用示例和配置说明\n- 保持文档的准确性和完整性\n- 如果有重大架构变化，请同时更新项目结构说明"
+  }
+}
