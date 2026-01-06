@@ -1,0 +1,52 @@
+{
+  "name": "wechat-fortune-draw-backend",
+  "version": "1.0.0",
+  "description": "微信小程序新年抽签应用后端API服务",
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:unit": "jest --config jest.unit.config.js",
+    "test:integration": "jest --config jest.integration.config.js",
+    "test:unit:watch": "jest --config jest.unit.config.js --watch",
+    "test:docker": "jest --config jest.docker.config.js",
+    "test:docker:verbose": "jest --config jest.docker.config.js --verbose",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:docker",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean"
+  },
+  "keywords": ["wechat", "fortune", "draw", "api", "miniprogram", "新年", "抽签"],
+  "author": "Fortune Draw Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "better-sqlite3": "^9.2.2",
+    "helmet": "^7.1.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/better-sqlite3": "^7.6.8",
+    "@types/node": "^20.10.5",
+    "@types/jest": "^29.5.8",
+    "typescript": "^5.3.3",
+    "nodemon": "^3.0.2",
+    "ts-node": "^10.9.2",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "supertest": "^6.3.3",
+    "@types/supertest": "^2.0.16",
+    "rimraf": "^5.0.5"
+  }
+}

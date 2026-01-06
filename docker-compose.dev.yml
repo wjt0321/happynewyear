@@ -1,0 +1,59 @@
+# 开发环境 Docker Compose 配置
+# 用于本地开发和测试
+
+version: '3.8'
+
+services:
+  # 后端开发服务
+  fortune-backend-dev:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: builder  # 使用构建阶段，包含开发工具
+    image: wechat-fortune-draw:dev
+    container_name: fortune-backend-dev
+    restart: unless-stopped
+    
+    # 端口映射
+    ports:
+      - "3000:3000"
+    
+    # 环境变量配置
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DB_PATH=/app/data/fortune.db
+    
+    # 开发环境数据卷挂载
+    volumes:
+      - ./backend:/app:rw
+      - /app/node_modules  # 匿名卷，避免覆盖容器内的node_modules
+      - ./data:/app/data:rw
+      - ./backend/logs:/app/logs:rw
+    
+    # 开发命令 - 使用nodemon进行热重载
+    command: ["npm", "run", "dev"]
+    
+    # 健康检查（开发环境简化版）
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 2
+      start_period: 20s
+    
+    # 网络配置
+    networks:
+      - fortune-dev-network
+    
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "2"
+
+# 开发网络
+networks:
+  fortune-dev-network:
+    driver: bridge

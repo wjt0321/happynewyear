@@ -1,0 +1,119 @@
+# 生产环境 Docker Compose 配置
+# 包含 Cloudflare Tunnel 用于HTTPS访问
+
+version: '3.8'
+
+services:
+  # 后端API服务
+  fortune-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: runtime
+    image: wechat-fortune-draw:latest
+    container_name: fortune-backend-prod
+    restart: unless-stopped
+    
+    # 仅内部网络访问，通过Cloudflare Tunnel对外提供服务
+    expose:
+      - "3000"
+    
+    # 环境变量配置
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_PATH=/app/data/fortune.db
+      - CORS_ORIGINS=${CORS_ORIGINS:-https://servicewechat.com}
+    
+    # 数据卷挂载
+    volumes:
+      - fortune_data:/app/data
+      - ./logs:/app/logs:rw
+    
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "node", "-e", "const http = require('http'); const options = { host: 'localhost', port: 3000, path: '/api/health', timeout: 2000 }; const req = http.request(options, (res) => { if (res.statusCode === 200) { process.exit(0); } else { process.exit(1); } }); req.on('error', () => process.exit(1)); req.on('timeout', () => process.exit(1)); req.end();"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.2'
+          memory: 256M
+    
+    # 网络配置
+    networks:
+      - fortune-internal
+    
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    
+    # 安全配置
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+
+  # Cloudflare Tunnel 服务
+  cloudflare-tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: fortune-cloudflare-tunnel
+    restart: unless-stopped
+    
+    # 使用tunnel token进行认证
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    
+    # 环境变量
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    
+    # 依赖后端服务
+    depends_on:
+      fortune-backend:
+        condition: service_healthy
+    
+    # 网络配置
+    networks:
+      - fortune-internal
+    
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+    
+    # 安全配置
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+
+# 数据卷定义
+volumes:
+  fortune_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DATA_PATH:-./data}
+
+# 内部网络（不对外暴露端口）
+networks:
+  fortune-internal:
+    driver: bridge
+    internal: false  # 允许访问外部网络（Cloudflare）
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16

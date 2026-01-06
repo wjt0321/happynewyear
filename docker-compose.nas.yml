@@ -1,0 +1,152 @@
+# 微信小程序新年抽签应用 - NAS Debian环境专用配置
+# 适用于群晖NAS或其他Debian NAS系统
+# 使用高端口避免与现有服务冲突
+#
+# 使用方法：
+# 1. 复制 .env.nas.example 为 .env.nas
+# 2. 根据实际环境修改 .env.nas 中的配置
+# 3. 运行: docker-compose -f docker-compose.nas.yml --env-file .env.nas up -d
+
+version: '3.8'
+
+services:
+  # 后端API服务
+  fortune-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: runtime
+      # 构建优化配置
+      cache_from:
+        - wechat-fortune-draw-nas:latest
+      args:
+        - NODE_ENV=production
+        - BUILD_DATE=${BUILD_DATE:-}
+        - VERSION=${VERSION:-latest}
+    image: wechat-fortune-draw-nas:latest
+    container_name: ${COMPOSE_PROJECT_NAME:-wechat-fortune-draw-nas}-backend
+    restart: unless-stopped
+    
+    # 启动优化配置
+    init: true  # 使用init进程，提高信号处理
+    stop_grace_period: 30s  # 优雅停止时间
+    
+    # NAS专用端口映射 - 使用环境变量配置
+    ports:
+      - "${BACKEND_PORT:-18080}:${BACKEND_PORT:-18080}"
+    
+    # NAS环境变量配置 - 统一使用环境变量
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=${BACKEND_PORT:-18080}
+      - DB_PATH=${DB_PATH:-/app/data/fortune.db}
+      - CORS_ORIGINS=${CORS_ORIGINS}
+      # 数据库性能优化配置
+      - DB_CACHE_SIZE=${DB_CACHE_SIZE:-10000}  # SQLite缓存大小
+      - DB_JOURNAL_MODE=${DB_JOURNAL_MODE:-WAL}  # 使用WAL模式提高并发性能
+      - DB_SYNCHRONOUS=${DB_SYNCHRONOUS:-NORMAL}  # 同步模式平衡
+      # Node.js性能优化
+      - NODE_OPTIONS=--max-old-space-size=512  # 限制内存使用
+      - UV_THREADPOOL_SIZE=4  # 线程池大小
+    
+    # NAS数据卷挂载 - 使用环境变量配置路径
+    volumes:
+      - ${NAS_DATA_PATH:-/volume1/docker/wechat-fortune-draw/data}:/app/data
+      - ${NAS_LOGS_PATH:-/volume1/docker/wechat-fortune-draw/logs}:/app/logs:rw
+    
+    # 健康检查 - 使用独立脚本提高可维护性
+    healthcheck:
+      test: ["CMD", "/app/scripts/health-check.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    
+    # NAS资源限制 - 使用环境变量配置
+    deploy:
+      resources:
+        limits:
+          cpus: '${CPU_LIMIT:-1.0}'
+          memory: ${MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: '${CPU_RESERVATION:-0.2}'
+          memory: ${MEMORY_RESERVATION:-256M}
+    
+    # 网络配置
+    networks:
+      - fortune-nas-network
+    
+    # 日志配置 - 使用环境变量配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_MAX_SIZE:-50m}"
+        max-file: "${LOG_MAX_FILES:-5}"
+    
+    # 安全配置
+    security_opt:
+      - no-new-privileges:true
+    
+    # 只读根文件系统（除了数据目录）
+    read_only: true
+    tmpfs:
+      - /tmp:noexec,nosuid,size=200m
+
+  # 数据库管理工具 (可选)
+  adminer:
+    image: adminer:latest
+    container_name: ${COMPOSE_PROJECT_NAME:-wechat-fortune-draw-nas}-adminer
+    restart: unless-stopped
+    ports:
+      - "${ADMINER_PORT:-18082}:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=fortune-backend
+    networks:
+      - fortune-nas-network
+    depends_on:
+      fortune-backend:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
+    # 安全配置
+    security_opt:
+      - no-new-privileges:true
+
+# 网络定义
+networks:
+  fortune-nas-network:
+    driver: bridge
+    name: ${COMPOSE_PROJECT_NAME:-wechat-fortune-draw-nas}-network
+    ipam:
+      config:
+        - subnet: ${NETWORK_SUBNET:-172.21.0.0/16}
+
+# NAS环境部署指南
+# 
+# === 快速部署步骤 ===
+# 1. 准备环境配置:
+#    cp .env.nas.example .env.nas
+#    # 编辑 .env.nas 文件，设置正确的路径和端口
+#
+# 2. 创建数据目录:
+#    mkdir -p /volume1/docker/wechat-fortune-draw/{data,logs}
+#    chmod 755 /volume1/docker/wechat-fortune-draw
+#
+# 3. 启动服务:
+#    docker-compose -f docker-compose.nas.yml --env-file .env.nas up -d
+#
+# 4. 验证服务:
+#    curl http://localhost:18080/api/health
+#
+# === 访问地址 ===
+# - 后端API: http://NAS_IP:18080
+# - 数据库管理: http://NAS_IP:18082
+# - 健康检查: http://NAS_IP:18080/api/health
+#
+# === 故障排除 ===
+# - 查看日志: docker-compose -f docker-compose.nas.yml logs -f
+# - 重启服务: docker-compose -f docker-compose.nas.yml restart
+# - 停止服务: docker-compose -f docker-compose.nas.yml down

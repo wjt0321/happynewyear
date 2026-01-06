@@ -1,0 +1,156 @@
+// SCSS变量定义文件
+
+// 主色调配置
+$primary-red: #FF4757;      // 中国红
+$golden-yellow: #FFD700;    // 金黄色
+$festive-orange: #FF6B35;   // 节庆橙
+$lucky-green: #2ED573;      // 幸运绿
+$deep-red: #C44569;         // 深红色
+$warm-white: #FFF8E7;       // 暖白色
+
+// 渐变色配置
+$gradient-primary: linear-gradient(135deg, $primary-red 0%, $festive-orange 100%);
+$gradient-golden: linear-gradient(135deg, $golden-yellow 0%, #FFA502 100%);
+$gradient-background: linear-gradient(180deg, #FF4757 0%, #FF6B35 50%, #FFD700 100%);
+
+// 阴影配置
+$shadow-red: 0 8px 32px rgba(255, 71, 87, 0.3);
+$shadow-golden: 0 8px 32px rgba(255, 215, 0, 0.3);
+$shadow-deep: 0 12px 40px rgba(196, 69, 105, 0.4);
+
+// 字体家族
+$font-primary: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+$font-decorative: 'STKaiti', 'KaiTi', serif; // 楷体用于装饰性文字
+
+// 字体大小
+$font-size-hero: 48rpx;     // 主标题
+$font-size-large: 36rpx;    // 大标题
+$font-size-medium: 28rpx;   // 中等文字
+$font-size-small: 24rpx;    // 小文字
+$font-size-mini: 20rpx;     // 最小文字
+
+// 间距配置
+$spacing-xs: 8rpx;
+$spacing-sm: 16rpx;
+$spacing-md: 24rpx;
+$spacing-lg: 32rpx;
+$spacing-xl: 48rpx;
+$spacing-xxl: 64rpx;
+
+// 边框圆角
+$border-radius-sm: 8rpx;
+$border-radius-md: 16rpx;
+$border-radius-lg: 24rpx;
+$border-radius-xl: 32rpx;
+$border-radius-round: 50%;
+
+// 动画时长
+$animation-fast: 0.2s;
+$animation-normal: 0.3s;
+$animation-slow: 0.5s;
+
+// Z-index层级
+$z-index-background: 1;
+$z-index-decoration: 2;
+$z-index-content: 10;
+$z-index-modal: 100;
+$z-index-toast: 1000;
+
+// 屏幕断点
+$breakpoint-sm: 375px;  // iPhone SE
+$breakpoint-md: 390px;  // iPhone 12/13/14
+$breakpoint-lg: 428px;  // iPhone 12/13/14 Pro Max
+$breakpoint-xl: 480px;  // 大屏安卓
+
+// 安全区域
+$safe-area-top: constant(safe-area-inset-top);
+$safe-area-bottom: constant(safe-area-inset-bottom);
+$safe-area-left: constant(safe-area-inset-left);
+$safe-area-right: constant(safe-area-inset-right);
+
+// 或者使用env()
+$safe-area-top-env: env(safe-area-inset-top);
+$safe-area-bottom-env: env(safe-area-inset-bottom);
+$safe-area-left-env: env(safe-area-inset-left);
+$safe-area-right-env: env(safe-area-inset-right);
+
+// 混合宏定义
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin text-shadow-light {
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+@mixin text-shadow-heavy {
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+@mixin button-active {
+  &:active {
+    transform: scale(0.95);
+    transition: transform $animation-fast ease;
+  }
+}
+
+@mixin card-style {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-deep;
+  border: 4rpx solid $golden-yellow;
+}
+
+// 响应式混合宏
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == 'sm' {
+    @media screen and (max-width: #{$breakpoint-sm}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'md' {
+    @media screen and (min-width: #{$breakpoint-sm + 1px}) and (max-width: #{$breakpoint-lg}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'lg' {
+    @media screen and (min-width: #{$breakpoint-lg + 1px}) {
+      @content;
+    }
+  }
+}
+
+// 安全区域混合宏
+@mixin safe-area-padding {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: constant(safe-area-inset-left);
+  padding-left: env(safe-area-inset-left);
+  padding-right: constant(safe-area-inset-right);
+  padding-right: env(safe-area-inset-right);
+}
+
+@mixin safe-area-top {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+}
+
+@mixin safe-area-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
