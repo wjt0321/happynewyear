@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/user'
 import { useFortuneStore } from '../stores/fortune'
 import LoginModal from '../components/LoginModal.vue'
+import { Dice5, Sparkles, Clock, Shield, RotateCcw, Loader2, CheckCircle2 } from 'lucide-vue-next'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -94,7 +95,7 @@ const handleLoginSuccess = () => {
 <template>
   <div class="home-container">
     <div class="header">
-      <h1 class="title">🎊 新年抽签 🎊</h1>
+      <h1 class="title">新年抽签</h1>
       <p class="subtitle">2026 新年运势大揭秘</p>
     </div>
 
@@ -111,7 +112,9 @@ const handleLoginSuccess = () => {
 
     <div class="main-content">
       <div class="fortune-card">
-        <div class="card-icon">🎲</div>
+        <div class="card-icon">
+          <Dice5 :size="64" :stroke-width="1.5" />
+        </div>
         <h2 class="card-title">点击下方按钮抽签</h2>
         <p class="card-description">揭开您2026年的新年运势</p>
       </div>
@@ -125,9 +128,9 @@ const handleLoginSuccess = () => {
         :disabled="isDrawing || cooldownRemaining > 0 || !fortuneStore.canDraw()"
         @click="handleDraw"
       >
-        <span v-if="isDrawing" class="button-icon">⏳</span>
-        <span v-else-if="cooldownRemaining > 0" class="button-icon">⏰</span>
-        <span v-else class="button-icon">🎲</span>
+        <Loader2 v-if="isDrawing" class="button-icon" :size="28" :stroke-width="2" />
+        <Clock v-else-if="cooldownRemaining > 0" class="button-icon" :size="28" :stroke-width="2" />
+        <Dice5 v-else class="button-icon" :size="28" :stroke-width="2" />
 
         <span v-if="isDrawing">抽签中...</span>
         <span v-else-if="cooldownRemaining > 0">
@@ -137,28 +140,35 @@ const handleLoginSuccess = () => {
       </button>
 
       <div v-if="!fortuneStore.canDraw()" class="completed-message">
-        <p>🎉 您已经抽完所有运势啦！</p>
+        <CheckCircle2 class="completed-icon" :size="48" :stroke-width="2" />
+        <p>您已经抽完所有运势啦！</p>
         <p class="completed-subtitle">祝您2026年新年快乐！</p>
       </div>
     </div>
 
     <div class="features">
       <div class="feature-card">
-        <div class="feature-icon">✨</div>
+        <div class="feature-icon">
+          <Sparkles :size="32" :stroke-width="2" />
+        </div>
         <div class="feature-text">
           <h3>50条精选运势</h3>
           <p>精心挑选的新年运势内容</p>
         </div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🎯</div>
+        <div class="feature-icon">
+          <Shield :size="32" :stroke-width="2" />
+        </div>
         <div class="feature-text">
           <h3>防重复机制</h3>
           <p>确保每次都是新的运势</p>
         </div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">⏱️</div>
+        <div class="feature-icon">
+          <Clock :size="32" :stroke-width="2" />
+        </div>
         <div class="feature-text">
           <h3>智能冷却</h3>
           <p>10秒冷却时间，理性抽签</p>
@@ -190,16 +200,18 @@ const handleLoginSuccess = () => {
 
 .title {
   font-size: 42px;
-  font-weight: bold;
+  font-weight: 700;
   color: white;
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   margin-bottom: 12px;
+  letter-spacing: -0.5px;
 }
 
 .subtitle {
   font-size: 18px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
 .stats-bar {
@@ -243,12 +255,14 @@ const handleLoginSuccess = () => {
 }
 
 .fortune-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   border-radius: 24px;
   padding: 40px;
   width: 100%;
   text-align: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   animation: fadeInUp 0.6s ease-out;
 }
 
@@ -264,8 +278,11 @@ const handleLoginSuccess = () => {
 }
 
 .card-icon {
-  font-size: 64px;
+  color: #ff4757;
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card-title {
@@ -288,10 +305,10 @@ const handleLoginSuccess = () => {
   border: none;
   border-radius: 20px;
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 8px 24px rgba(255, 71, 87, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(255, 71, 87, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -302,29 +319,32 @@ const handleLoginSuccess = () => {
 
 .draw-button:hover:not(:disabled) {
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(255, 71, 87, 0.5);
+  box-shadow: 0 12px 32px rgba(255, 71, 87, 0.45);
 }
 
 .draw-button:active:not(:disabled) {
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 71, 87, 0.35);
 }
 
 .draw-button:disabled {
-  opacity: 0.6;
+  opacity: 0.7;
   cursor: not-allowed;
   transform: none;
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.25);
 }
 
 .draw-button.drawing {
   background: linear-gradient(135deg, #ffa502 0%, #ff6348 100%);
+  box-shadow: 0 8px 24px rgba(255, 165, 2, 0.35);
 }
 
 .draw-button.cooldown {
   background: linear-gradient(135deg, #747d8c 0%, #57606f 100%);
+  box-shadow: 0 8px 24px rgba(116, 125, 140, 0.3);
 }
 
 .button-icon {
-  font-size: 28px;
   animation: pulse 1s ease-in-out infinite;
 }
 
@@ -341,6 +361,11 @@ const handleLoginSuccess = () => {
   text-align: center;
   color: white;
   animation: bounceIn 0.6s ease-out;
+}
+
+.completed-icon {
+  color: #ffd700;
+  margin-bottom: 16px;
 }
 
 @keyframes bounceIn {
@@ -379,15 +404,17 @@ const handleLoginSuccess = () => {
 }
 
 .feature-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   border-radius: 16px;
   padding: 24px;
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   animation: slideUp 0.5s ease-out backwards;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .feature-card:nth-child(1) {
@@ -419,8 +446,11 @@ const handleLoginSuccess = () => {
 }
 
 .feature-icon {
-  font-size: 32px;
+  color: #667eea;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .feature-text h3 {
@@ -450,7 +480,7 @@ const handleLoginSuccess = () => {
   }
 
   .card-icon {
-    font-size: 48px;
+    color: #ff4757;
   }
 
   .draw-button {
