@@ -1,25 +1,62 @@
-# 🧧 微信小程序新年抽签应用
+# 🎊 新年抽签应用 - Web版
 
-一个基于uni-app + Vue3 + TypeScript开发的微信小程序新年抽签应用，后端使用Node.js + Express + SQLite，支持Docker容器化部署。
+基于Vue3 + TypeScript开发的纯Web新年抽签应用，支持本地部署和Docker容器化部署。后端使用Node.js + Express + SQLite。
+
+## 🎉 最新更新 (2026-01-07)
+
+### 🆕 Web前端转换完成
+
+**重大更新：项目已从微信小程序转换为纯Web前端！**
+
+#### 主要变更
+- ✅ **移除微信依赖** - 完全移除uni-app和微信小程序API
+- ✅ **纯Web前端** - 使用Vue3 + Vite + TypeScript构建
+- ✅ **本地登录系统** - 支持昵称登录，无需微信认证
+- ✅ **浏览器存储** - 使用localStorage管理用户数据
+- ✅ **Docker部署** - 支持完整的Web前端+后端容器化部署
+- ✅ **保留原小程序** - 微信小程序代码已备份到 `frontend-miniprogram-backup/`
+
+#### 技术栈升级
+**前端（Web版）：**
+- Vue 3.5 + TypeScript 5.9
+- Vite 7.2（构建工具）
+- Vue Router 4（路由管理）
+- Pinia 2（状态管理）
+- Axios（HTTP客户端）
+
+**后端（保持不变）：**
+- Node.js + Express
+- SQLite数据库
+- TypeScript
+
+#### 功能变更
+| 功能 | 微信小程序版 | Web版 |
+|------|------------|--------|
+| 登录方式 | 微信登录 | 昵称登录 |
+| 分享功能 | 微信分享 | 复制到剪贴板 |
+| 平台支持 | 微信小程序 | 现代浏览器 |
+| 部署方式 | 需微信审核 | 自由部署 |
 
 ## 📱 功能特色
 
-- 🎊 **新年主题界面** - 中国红配色，飘雪烟花动画效果
+- 🎊 **新年主题界面** - 中国红配色，精美动画效果
 - 🎲 **智能抽签系统** - 50条精选新年运势，不重复抽取
 - ⏰ **防刷机制** - 10秒冷却期，防止恶意刷取
-- 📤 **微信分享** - 一键分享运势给好友
-- 🔐 **微信登录** - 安全的用户身份识别
+- � **复制分享** - 一键复制运势到剪贴板
+- 🔐 **本地登录** - 简单的昵称登录系统
 - 📱 **响应式设计** - 适配各种屏幕尺寸
 - 🐳 **Docker部署** - 一键容器化部署
+- 💾 **数据持久化** - localStorage保存用户记录
 
 ## 🏗️ 技术架构
 
-### 前端技术栈
-- **uni-app** - 跨平台开发框架
+### 前端技术栈（Web版）
 - **Vue 3** - 现代化前端框架
+- **Vite** - 快速的构建工具
 - **TypeScript** - 类型安全
+- **Vue Router** - 单页应用路由
 - **Pinia** - 状态管理
-- **SCSS** - 样式预处理
+- **Axios** - HTTP客户端
 
 ### 后端技术栈
 - **Node.js 18+** - JavaScript运行时
@@ -30,7 +67,7 @@
 
 ### 部署技术
 - **Docker** - 容器化部署
-- **Cloudflare Tunnel** - HTTPS域名代理
+- **Nginx** - Web服务器
 - **Docker Compose** - 服务编排
 
 ## 🚀 快速开始
@@ -41,38 +78,59 @@
 - npm >= 8.0.0
 - Docker (可选，用于容器化部署)
 
-### 安装依赖
+### 方式一：本地开发
 
 ```bash
-# 安装所有依赖
-npm run install:all
-
-# 或分别安装
+# 安装后端依赖
+cd backend
 npm install
-npm run install:backend
-npm run install:frontend
-```
 
-### 开发环境运行
+# 安装前端依赖
+cd ../frontend
+npm install
 
-```bash
-# 启动开发环境（前后端同时启动）
+# 启动后端服务（终端1）
+cd backend
 npm run dev
+# 后端运行在 http://localhost:5000
 
-# 或分别启动
-npm run dev:backend  # 后端服务 http://localhost:3000
-npm run dev:frontend # 前端服务 http://localhost:8080
+# 启动前端开发服务器（终端2）
+cd frontend
+npm run dev
+# 前端运行在 http://localhost:5173
 ```
 
-### 生产环境构建
+### 方式二：Docker部署
+
+#### Web版部署（推荐）
 
 ```bash
-# 构建所有项目
-npm run build
+# 1. 构建并启动完整Web服务
+docker compose -f docker-compose.web.yml up -d
 
-# 或分别构建
-npm run build:backend
-npm run build:frontend
+# 2. 访问应用
+# 前端：http://localhost:8080
+# 后端API：http://localhost:5000
+
+# 3. 查看日志
+docker compose -f docker-compose.web.yml logs -f
+
+# 4. 停止服务
+docker compose -f docker-compose.web.yml down
+```
+
+#### 环境变量配置
+
+创建 `.env` 文件：
+```env
+# 后端服务端口
+BACKEND_PORT=5000
+
+# 前端服务端口
+FRONTEND_PORT=8080
+
+# 数据存储路径
+DATA_PATH=./data
 ```
 
 ## 🧪 测试
@@ -80,113 +138,111 @@ npm run build:frontend
 ### 运行测试
 
 ```bash
-# 运行所有测试
-npm run test:all
+# 后端测试
+cd backend
+npm test
 
-# 分别运行测试
-npm run test:backend    # 后端单元测试
-npm run test:frontend   # 前端单元测试
-npm run test:integration # 集成测试
-npm run test:e2e        # 端到端测试
+# 前端测试
+cd frontend
+npm test
 ```
 
-### 测试覆盖率
-
-- **后端测试**: 55个测试用例，覆盖数据库、API、业务逻辑
-- **前端测试**: 260个测试用例，覆盖组件、页面、工具函数
-- **集成测试**: 6个测试用例，验证前后端协作
-- **属性测试**: 验证系统正确性属性
-
-## 🐳 Docker部署
+## 🐳 Docker部署详解
 
 ### 部署方式选择
 
-项目提供三种Docker部署配置：
+项目提供多种Docker部署配置：
 
 | 部署方式 | 配置文件 | 端口 | 适用场景 |
 |---------|----------|------|----------|
+| **Web版（推荐）** | `docker-compose.web.yml` | 8080 | 纯Web前端+后端 |
 | 开发环境 | `docker-compose.dev.yml` | 3000 | 本地开发调试 |
 | 生产环境 | `docker-compose.prod.yml` | 3000 | 云服务器部署 |
-| **🆕 NAS环境** | **`docker-compose.nas.yml`** | **18080** | **NAS系统部署** |
+| NAS环境 | `docker-compose.nas.yml` | 18080 | NAS系统部署 |
 
-### NAS环境部署（新增推荐）
+### Web版部署架构
 
-专门为NAS环境优化的部署配置，适用于群晖、威联通等NAS系统：
-
-```bash
-# 1. 准备NAS环境配置
-cp .env.nas.example .env.nas
-# 编辑配置文件，设置NAS路径和端口
-
-# 2. 创建NAS数据目录
-mkdir -p /volume1/docker/wechat-fortune-draw/{data,logs}
-chmod 755 /volume1/docker/wechat-fortune-draw
-
-# 3. 启动NAS服务
-docker-compose -f docker-compose.nas.yml --env-file .env.nas up -d
-
-# 4. 验证服务状态
-curl http://localhost:18080/api/health
 ```
-
-**NAS配置特点：**
-- 🔌 **高端口配置**：使用18080/18082端口避免冲突
-- ⚡ **性能优化**：SQLite WAL模式、数据库缓存优化
-- 🛡️ **安全增强**：只读根文件系统、安全选项配置
-- 📊 **监控完善**：独立健康检查和日志管理
-- 💾 **数据持久化**：优化的NAS数据卷挂载
-
-### 使用Docker Compose（传统方式）
-
-```bash
-# 开发环境
-docker-compose -f docker-compose.dev.yml up
-
-# 生产环境
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-### 手动Docker构建
-
-```bash
-# 构建镜像
-docker build -t wechat-fortune-draw ./backend
-
-# 运行容器
-docker run -d -p 3000:3000 -v $(pwd)/data:/app/data wechat-fortune-draw
+┌─────────────────────────────────────┐
+│     Docker Compose编排          │
+├─────────────────────────────────────┤
+│                                 │
+│  ┌──────────────┐  ┌─────────┐ │
+│  │  Nginx      │  │         │ │
+│  │  :8080      │  │         │ │
+│  └──────┬───────┘  │         │ │
+│         │           │         │ │
+│         ▼           │         │ │
+│  ┌──────────────┐  │         │ │
+│  │  Vue3前端    │  │         │ │
+│  │  (静态文件)  │  │         │ │
+│  └──────────────┘  │         │ │
+│                   │         │ │
+│                   └─────────┤ │
+│                             │ │
+│  ┌────────────────────────┐   │ │
+│  │  Express后端 API     │   │ │
+│  │  :5000              │   │ │
+│  │  SQLite数据库         │   │ │
+│  └────────────────────────┘   │ │
+│                             │ │
+└─────────────────────────────────┘
 ```
 
 ## 📁 项目结构
 
 ```
-wechat-fortune-draw/
-├── backend/                 # 后端服务
+happynewyear/
+├── backend/                      # 后端API服务
 │   ├── src/
-│   │   ├── database/       # 数据库相关
-│   │   ├── routes/         # API路由
-│   │   ├── services/       # 业务逻辑
-│   │   ├── middleware/     # 中间件
-│   │   └── types/          # 类型定义
-│   ├── tests/              # 测试文件
-│   └── Dockerfile          # Docker配置
-├── frontend/               # 前端应用
+│   │   ├── database/            # 数据库相关
+│   │   ├── routes/              # API路由
+│   │   ├── services/            # 业务逻辑
+│   │   ├── middleware/          # 中间件
+│   │   └── types/               # 类型定义
+│   ├── Dockerfile              # Docker配置
+│   └── package.json
+├── frontend/                     # Web前端应用（新）
 │   ├── src/
-│   │   ├── pages/          # 页面组件
-│   │   ├── components/     # 通用组件
-│   │   ├── stores/         # 状态管理
-│   │   ├── utils/          # 工具函数
-│   │   └── styles/         # 样式文件
-│   └── tests/              # 测试文件
-├── scripts/                # 部署脚本
-├── tests/                  # 端到端测试
-└── docs/                   # 项目文档
+│   │   ├── components/         # 组件（LoginModal等）
+│   │   ├── views/             # 页面（HomeView、ResultView）
+│   │   ├── stores/            # 状态管理（user、fortune）
+│   │   ├── router/            # 路由配置
+│   │   ├── App.vue            # 根组件
+│   │   └── main.ts           # 入口文件
+│   ├── Dockerfile              # Docker配置
+│   ├── nginx.conf             # Nginx配置
+│   └── package.json
+├── frontend-miniprogram-backup/  # 微信小程序备份
+│   ├── src/
+│   │   ├── pages/             # 小程序页面
+│   │   ├── components/        # 小程序组件
+│   │   ├── stores/            # 小程序状态管理
+│   │   └── utils/             # 小程序工具函数
+│   └── package.json
+├── scripts/                     # 部署脚本
+├── docs/                        # 项目文档
+├── docker-compose.web.yml        # Web版部署配置
+├── docker-compose.nas.yml        # NAS部署配置
+├── docker-compose.dev.yml        # 开发环境配置
+└── docker-compose.prod.yml       # 生产环境配置
 ```
 
 ## 🔧 配置说明
 
 ### 环境变量
 
-创建 `backend/.env` 文件：
+#### 前端环境变量（frontend/.env）
+
+```env
+# 开发环境
+VITE_API_BASE_URL=/api
+
+# 生产环境（frontend/.env.production）
+VITE_API_BASE_URL=https://ny.wxbfnnas.com
+```
+
+#### 后端环境变量（backend/.env）
 
 ```env
 # 服务配置
@@ -194,23 +250,8 @@ PORT=3000
 NODE_ENV=production
 
 # 数据库配置
-DB_PATH=./data/fortune.db
-
-# 微信小程序配置
-WECHAT_APP_ID=your_app_id
-WECHAT_APP_SECRET=your_app_secret
-
-# 安全配置
-JWT_SECRET=your_jwt_secret
+DB_PATH=/app/data/fortune.db
 ```
-
-### 数据库初始化
-
-系统首次运行时会自动：
-- 创建SQLite数据库文件
-- 初始化表结构（fortunes、user_draws）
-- 插入50条预设运势数据
-- 创建必要的索引
 
 ## 📊 API文档
 
@@ -230,8 +271,8 @@ Content-Type: application/json
 {
   "success": true,
   "data": {
-    "id": 1,
-    "text": "2026年财运爆棚，金银满屋！",
+    "id": 49,
+    "text": "龙腾虎跃，大展宏图！",
     "isNew": true
   }
 }
@@ -247,32 +288,39 @@ GET /api/health
 ```json
 {
   "status": "ok",
-  "timestamp": "2026-01-06T12:00:00.000Z",
+  "timestamp": "2026-01-07T12:00:00.000Z",
   "database": "connected"
 }
 ```
 
 ## 🎨 界面预览
 
-### 首页
-- 新年主题背景动画
-- 中央抽签按钮
-- 装饰性元素（灯笼、金币、龙等）
+### 首页（HomeView）
+- 新年主题背景（紫色渐变）
+- 中央抽签按钮（带动画效果）
+- 剩余运势统计
 - 冷却倒计时显示
+- 功能特性卡片展示
 
-### 结果页
+### 登录弹窗（LoginModal）
+- 简洁的昵称输入框
+- 输入验证（2-20字符）
+- 功能特性展示
+
+### 结果页（ResultView）
 - 运势卡片展示
-- 金光闪烁动画
-- 分享和再次抽签按钮
-- 庆祝粒子效果
+- 新运势徽章
+- 复制分享按钮
+- 再次抽签按钮
 
 ## 🔒 安全特性
 
-- **用户身份验证** - 微信openid识别
+- **用户会话管理** - 基于24小时时间戳
 - **防刷机制** - 10秒冷却期
 - **数据完整性** - 外键约束和唯一性检查
 - **输入验证** - 严格的参数校验
 - **错误处理** - 完善的异常处理机制
+- **Docker安全** - 只读根文件系统、安全选项
 
 ## 📈 性能优化
 
@@ -280,33 +328,73 @@ GET /api/health
 - **连接池管理** - 高效的数据库连接
 - **缓存机制** - 运势数据缓存
 - **响应式设计** - 适配各种设备
-- **代码分割** - 按需加载
+- **代码分割** - 路由懒加载
+- **Gzip压缩** - Nginx启用压缩
+- **静态资源缓存** - 浏览器缓存策略
+
+## 🌐 浏览器支持
+
+支持以下现代浏览器：
+- Chrome >= 90
+- Firefox >= 88
+- Safari >= 14
+- Edge >= 90
+
+需要的特性：
+- ES6+
+- CSS Grid
+- CSS Flexbox
+- localStorage API
+- Clipboard API
 
 ## 🐛 故障排除
 
 ### 常见问题
 
-1. **端口被占用**
+1. **前端无法连接后端**
    ```bash
-   # 查找占用端口的进程
-   netstat -ano | findstr :3000
-   # 终止进程
-   taskkill /PID <进程ID> /F
+   # 检查后端服务是否运行
+   curl http://localhost:5000/api/health
+
+   # 检查Vite代理配置
+   # 确保 vite.config.ts 中 proxy 配置正确
    ```
 
-2. **数据库连接失败**
-   - 检查数据库文件权限
-   - 确认数据目录存在
-   - 查看错误日志
+2. **端口被占用**
+   ```bash
+   # 查找占用端口的进程
+   lsof -i :5000
+   # 或
+   netstat -tulpn | grep :5000
+   ```
 
-3. **微信登录失败**
-   - 检查AppID和AppSecret配置
-   - 确认小程序域名配置
-   - 验证网络连接
+3. **localStorage数据丢失**
+   - 确保使用现代浏览器
+   - 检查浏览器隐私设置
+   - 清除浏览器缓存后数据会重置
+
+4. **Docker容器启动失败**
+   ```bash
+   # 查看容器日志
+   docker compose -f docker-compose.web.yml logs
+
+   # 检查端口占用
+   docker ps -a
+   ```
 
 ## 📝 更新日志
 
-### v1.0.0 (2026-01-06)
+### v2.0.0 (2026-01-07) - Web前端转换版
+- 🆕 **重大更新** - 从微信小程序转换为纯Web前端
+- ✨ 新增Vue3 + Vite + TypeScript技术栈
+- 🔐 新增本地登录系统（昵称登录）
+- 📋 新增复制分享功能
+- 🐳 新增Docker Web部署配置
+- 💾 新增浏览器本地存储支持
+- 📱 优化响应式设计和动画效果
+- 📚 更新完整文档
+
+### v1.0.0 (2026-01-06) - 微信小程序版
 - ✨ 初始版本发布
 - 🎊 完整的新年抽签功能
 - 📱 微信小程序支持
@@ -327,14 +415,24 @@ GET /api/health
 
 ## 👥 作者
 
-- **Fortune Draw Team** - *初始开发* - [GitHub](https://github.com/your-username)
+- **wjt0321** - 项目维护者 - [GitHub](https://github.com/wjt0321)
 
 ## 🙏 致谢
 
-- 感谢uni-app团队提供优秀的跨平台开发框架
 - 感谢Vue.js社区的技术支持
+- 感谢Vite团队提供优秀的构建工具
 - 感谢所有测试用户的反馈
+
+## 📚 相关文档
+
+- [WEB转换说明.md](./WEB转换说明.md) - Web前端转换详细说明
+- [GITHUB上传总结.md](./GITHUB_UPLOAD_SUMMARY.md) - GitHub上传总结
+- [docs/API文档.md](./docs/API文档.md) - 完整API文档
+- [docs/部署指南.md](./docs/部署指南.md) - 部署说明
+- [docs/使用指南.md](./docs/使用指南.md) - 使用说明
 
 ---
 
-**🎊 祝您新年快乐，好运连连！🎊**
+**🎊 祝您2026年新年快乐，好运连连！🎊**
+
+**GitHub仓库：** https://github.com/wjt0321/happynewyear.git
