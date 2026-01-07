@@ -425,6 +425,8 @@ GET /api/health
 
 ## 📚 相关文档
 
+- [BRANCH_INFO.md](./BRANCH_INFO.md) - 分支说明和版本对比
+
 - [WEB转换说明.md](./WEB转换说明.md) - Web前端转换详细说明
 - [GITHUB上传总结.md](./GITHUB_UPLOAD_SUMMARY.md) - GitHub上传总结
 - [docs/API文档.md](./docs/API文档.md) - 完整API文档
