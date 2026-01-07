@@ -1,0 +1,139 @@
+# 🔒 微信小程序新年抽签应用 - Git忽略文件
+# 确保敏感信息和不必要文件不会被上传到GitHub
+
+# ==================== Kiro和开发工具文件夹 ====================
+.kiro/
+.shared/
+
+# ==================== 环境变量和敏感配置 ====================
+# 环境变量文件（包含敏感信息）
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.nas
+
+# 微信小程序配置（可能包含密钥）
+backend/.env
+frontend/.env.local
+
+# ==================== 数据库和数据文件 ====================
+# SQLite数据库文件
+*.db
+*.sqlite
+*.sqlite3
+backend/data/
+data/
+
+# 数据库备份文件
+backups/
+*.backup
+*.bak
+
+# ==================== 日志文件 ====================
+logs/
+*.log
+backend/logs/
+frontend/logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==================== Node.js ====================
+# 依赖包
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# npm包锁定文件（保留package-lock.json，但排除yarn.lock冲突）
+yarn.lock
+
+# npm缓存
+.npm
+.yarn-integrity
+
+# ==================== 构建输出 ====================
+# 前端构建输出
+frontend/dist/
+frontend/build/
+frontend/unpackage/
+
+# 后端构建输出
+backend/dist/
+backend/build/
+
+# ==================== 测试覆盖率报告 ====================
+coverage/
+*.lcov
+frontend/coverage/
+backend/coverage/
+
+# ==================== IDE和编辑器 ====================
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# WebStorm
+.idea/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ==================== 操作系统 ====================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ==================== Docker ====================
+# Docker临时文件
+.dockerignore.bak
+
+# ==================== 临时文件 ====================
+# 临时目录
+tmp/
+temp/
+.tmp/
+
+# 测试临时文件
+test-backup-data/
+*.tmp
+
+# ==================== 证书和密钥 ====================
+# SSL证书
+*.pem
+*.key
+*.crt
+*.cert
+
+# JWT密钥
+*.jwt
+
+# ==================== 其他 ====================
+# 压缩文件
+*.zip
+*.tar.gz
+*.rar
+
+# 系统文件
+*.swp
+*.swo
+*~
+
+# 本地配置文件
+local.json
+local.config.js

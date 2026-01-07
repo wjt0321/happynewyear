@@ -1,0 +1,711 @@
+// 响应式设计适配文件
+// 适配iPhone和安卓主流机型，实现安全区域适配
+
+@import './variables.scss';
+
+// ==================== 设备断点定义 ====================
+
+// 基础断点（继承自variables.scss并扩展）
+$device-xs: 320px;    // 最小屏幕
+$device-sm: 375px;    // iPhone SE, iPhone 12 mini
+$device-md: 390px;    // iPhone 12/13/14
+$device-lg: 428px;    // iPhone 12/13/14 Pro Max
+$device-xl: 480px;    // 大屏安卓设备
+$device-xxl: 768px;   // 平板设备
+
+// 高度断点
+$height-sm: 667px;    // iPhone SE
+$height-md: 844px;    // iPhone 12/13/14
+$height-lg: 926px;    // iPhone 12/13/14 Pro Max
+
+// ==================== 响应式混合宏 ====================
+
+// 通用响应式（兼容theme.scss）
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == 'xs' {
+    @media screen and (max-width: #{$device-xs}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'sm' {
+    @media screen and (max-width: #{$device-sm}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'md' {
+    @media screen and (min-width: #{$device-sm + 1px}) and (max-width: #{$device-lg}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'lg' {
+    @media screen and (min-width: #{$device-lg + 1px}) and (max-width: #{$device-xl}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'xl' {
+    @media screen and (min-width: #{$device-xl + 1px}) {
+      @content;
+    }
+  }
+}
+
+// 宽度响应式
+@mixin respond-width($breakpoint) {
+  @if $breakpoint == 'xs' {
+    @media screen and (max-width: #{$device-xs}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'sm' {
+    @media screen and (max-width: #{$device-sm}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'md' {
+    @media screen and (min-width: #{$device-sm + 1px}) and (max-width: #{$device-lg}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'lg' {
+    @media screen and (min-width: #{$device-lg + 1px}) and (max-width: #{$device-xl}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'xl' {
+    @media screen and (min-width: #{$device-xl + 1px}) {
+      @content;
+    }
+  }
+}
+
+// 高度响应式
+@mixin respond-height($breakpoint) {
+  @if $breakpoint == 'sm' {
+    @media screen and (max-height: #{$height-sm}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'md' {
+    @media screen and (min-height: #{$height-sm + 1px}) and (max-height: #{$height-lg}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'lg' {
+    @media screen and (min-height: #{$height-lg + 1px}) {
+      @content;
+    }
+  }
+}
+
+// 设备像素比响应式
+@mixin respond-dpr($dpr) {
+  @media screen and (-webkit-min-device-pixel-ratio: $dpr),
+         screen and (min-resolution: #{$dpr * 96}dpi) {
+    @content;
+  }
+}
+
+// 横屏响应式
+@mixin respond-landscape {
+  @media screen and (orientation: landscape) {
+    @content;
+  }
+}
+
+// 竖屏响应式
+@mixin respond-portrait {
+  @media screen and (orientation: portrait) {
+    @content;
+  }
+}
+
+// ==================== 安全区域适配 ====================
+
+// 安全区域变量
+$safe-area-inset-top: env(safe-area-inset-top);
+$safe-area-inset-bottom: env(safe-area-inset-bottom);
+$safe-area-inset-left: env(safe-area-inset-left);
+$safe-area-inset-right: env(safe-area-inset-right);
+
+// 兼容性安全区域变量
+$safe-area-inset-top-compat: constant(safe-area-inset-top);
+$safe-area-inset-bottom-compat: constant(safe-area-inset-bottom);
+$safe-area-inset-left-compat: constant(safe-area-inset-left);
+$safe-area-inset-right-compat: constant(safe-area-inset-right);
+
+// 安全区域混合宏
+@mixin safe-area-padding-all {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: constant(safe-area-inset-left);
+  padding-left: env(safe-area-inset-left);
+  padding-right: constant(safe-area-inset-right);
+  padding-right: env(safe-area-inset-right);
+}
+
+@mixin safe-area-padding-vertical {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@mixin safe-area-padding-horizontal {
+  padding-left: constant(safe-area-inset-left);
+  padding-left: env(safe-area-inset-left);
+  padding-right: constant(safe-area-inset-right);
+  padding-right: env(safe-area-inset-right);
+}
+
+@mixin safe-area-top {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+}
+
+@mixin safe-area-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@mixin safe-area-left {
+  padding-left: constant(safe-area-inset-left);
+  padding-left: env(safe-area-inset-left);
+}
+
+@mixin safe-area-right {
+  padding-right: constant(safe-area-inset-right);
+  padding-right: env(safe-area-inset-right);
+}
+
+// 安全区域margin版本
+@mixin safe-area-margin-top {
+  margin-top: constant(safe-area-inset-top);
+  margin-top: env(safe-area-inset-top);
+}
+
+@mixin safe-area-margin-bottom {
+  margin-bottom: constant(safe-area-inset-bottom);
+  margin-bottom: env(safe-area-inset-bottom);
+}
+
+// ==================== 容器响应式布局 ====================
+
+// 响应式容器
+@mixin responsive-container {
+  width: 100%;
+  max-width: 750rpx;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+  
+  @include respond-width('sm') {
+    padding: 0 $spacing-md;
+  }
+  
+  @include respond-width('xl') {
+    max-width: 1200rpx;
+    padding: 0 $spacing-xl;
+  }
+}
+
+// 响应式网格
+@mixin responsive-grid($columns: 2, $gap: $spacing-md) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: $gap;
+  
+  @include respond-width('sm') {
+    grid-template-columns: 1fr;
+    gap: $gap * 0.75;
+  }
+  
+  @include respond-width('xl') {
+    gap: $gap * 1.25;
+  }
+}
+
+// 响应式弹性布局
+@mixin responsive-flex($direction: row, $gap: $spacing-md) {
+  display: flex;
+  flex-direction: $direction;
+  gap: $gap;
+  
+  @include respond-width('sm') {
+    flex-direction: column;
+    gap: $gap * 0.75;
+  }
+}
+
+// ==================== 组件响应式适配 ====================
+
+// 响应式按钮
+@mixin responsive-button {
+  min-height: 88rpx;
+  padding: $spacing-md $spacing-lg;
+  font-size: $font-size-small;
+  
+  @include respond-width('sm') {
+    min-height: 80rpx;
+    padding: $spacing-sm $spacing-md;
+    font-size: $font-size-mini;
+  }
+  
+  @include respond-width('lg') {
+    min-height: 96rpx;
+    padding: $spacing-lg $spacing-xl;
+    font-size: $font-size-medium;
+  }
+}
+
+// 响应式卡片
+@mixin responsive-card {
+  padding: $spacing-xl $spacing-lg;
+  margin: $spacing-lg;
+  border-radius: $border-radius-xl;
+  
+  @include respond-width('sm') {
+    padding: $spacing-lg $spacing-md;
+    margin: $spacing-md;
+    border-radius: $border-radius-lg;
+  }
+  
+  @include respond-width('lg') {
+    padding: $spacing-xxl $spacing-xl;
+    margin: $spacing-xl auto;
+    max-width: 600rpx;
+  }
+}
+
+// 响应式标题
+@mixin responsive-title {
+  font-size: $font-size-hero;
+  line-height: 1.2;
+  margin-bottom: $spacing-lg;
+  
+  @include respond-width('sm') {
+    font-size: 40rpx;
+    margin-bottom: $spacing-md;
+  }
+  
+  @include respond-width('lg') {
+    font-size: 52rpx;
+    margin-bottom: $spacing-xl;
+  }
+}
+
+// 响应式文本
+@mixin responsive-text {
+  font-size: $font-size-small;
+  line-height: 1.6;
+  
+  @include respond-width('sm') {
+    font-size: $font-size-mini;
+    line-height: 1.5;
+  }
+  
+  @include respond-width('lg') {
+    font-size: $font-size-medium;
+    line-height: 1.7;
+  }
+}
+
+// ==================== 特定设备适配 ====================
+
+// iPhone SE (375px x 667px) 适配
+@mixin iphone-se-adapt {
+  @media screen and (max-width: 375px) and (max-height: 667px) {
+    @content;
+  }
+}
+
+// iPhone 12/13/14 (390px x 844px) 适配
+@mixin iphone-standard-adapt {
+  @media screen and (min-width: 376px) and (max-width: 430px) and (min-height: 800px) {
+    @content;
+  }
+}
+
+// iPhone 12/13/14 Pro Max (428px x 926px) 适配
+@mixin iphone-pro-max-adapt {
+  @media screen and (min-width: 431px) and (min-height: 900px) {
+    @content;
+  }
+}
+
+// 安卓大屏适配
+@mixin android-large-adapt {
+  @media screen and (min-width: 480px) {
+    @content;
+  }
+}
+
+// ==================== 响应式工具类 ====================
+
+// 容器类
+.responsive-container {
+  @include responsive-container;
+}
+
+.responsive-grid-2 {
+  @include responsive-grid(2);
+}
+
+.responsive-grid-3 {
+  @include responsive-grid(3);
+}
+
+.responsive-flex-row {
+  @include responsive-flex(row);
+}
+
+.responsive-flex-column {
+  @include responsive-flex(column);
+}
+
+// 安全区域类
+.safe-area-all {
+  @include safe-area-padding-all;
+}
+
+.safe-area-vertical {
+  @include safe-area-padding-vertical;
+}
+
+.safe-area-horizontal {
+  @include safe-area-padding-horizontal;
+}
+
+.safe-area-top {
+  @include safe-area-top;
+}
+
+.safe-area-bottom {
+  @include safe-area-bottom;
+}
+
+// 显示/隐藏类
+.show-sm {
+  display: none;
+  @include respond-width('sm') {
+    display: block;
+  }
+}
+
+.hide-sm {
+  display: block;
+  @include respond-width('sm') {
+    display: none;
+  }
+}
+
+.show-lg {
+  display: none;
+  @include respond-width('lg') {
+    display: block;
+  }
+}
+
+.hide-lg {
+  display: block;
+  @include respond-width('lg') {
+    display: none;
+  }
+}
+
+// ==================== 页面级响应式适配 ====================
+
+// 英雄标题mixin（替代theme.scss中的theme-title-hero）
+@mixin theme-title-hero {
+  font-size: $font-size-hero;
+  font-weight: 700;
+  color: $warm-white;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  font-family: $font-decorative;
+  text-align: center;
+  line-height: 1.2;
+}
+
+// 卡片mixin（替代theme.scss中的theme-card）
+@mixin theme-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 248, 231, 0.98) 100%);
+  border-radius: $border-radius-xl;
+  box-shadow: 0 8px 32px rgba(255, 71, 87, 0.15);
+  border: 4rpx solid $golden-yellow;
+  padding: $spacing-xl $spacing-lg;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2rpx;
+    left: -2rpx;
+    right: -2rpx;
+    bottom: -2rpx;
+    background: linear-gradient(45deg, #FFD700, #FF4757, #FF6B35);
+    border-radius: $border-radius-xl;
+    z-index: -1;
+    opacity: 0.3;
+  }
+}
+
+// 首页响应式适配
+.home-page {
+  @include safe-area-padding-vertical;
+  min-height: 100vh;
+  
+  .home-container {
+    @include responsive-container;
+    @include flex-center;
+    flex-direction: column;
+    min-height: calc(100vh - constant(safe-area-inset-top) - constant(safe-area-inset-bottom));
+    min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
+  
+  .home-header {
+    text-align: center;
+    margin-bottom: $spacing-xxl;
+    
+    @include respond-width('sm') {
+      margin-bottom: $spacing-xl;
+    }
+    
+    .app-title {
+      @include responsive-title;
+      @include theme-title-hero;
+    }
+    
+    .app-subtitle {
+      @include responsive-text;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: $spacing-md;
+    }
+  }
+  
+  .fortune-section {
+    flex: 1;
+    @include flex-center;
+    padding: $spacing-xl 0;
+    
+    @include respond-width('sm') {
+      padding: $spacing-lg 0;
+    }
+  }
+  
+  .info-section {
+    text-align: center;
+    margin-top: $spacing-xl;
+    
+    @include respond-width('sm') {
+      margin-top: $spacing-lg;
+    }
+    
+    .info-text {
+      @include responsive-text;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: $spacing-sm;
+    }
+    
+    .info-subtext {
+      font-size: $font-size-mini;
+      color: rgba(255, 255, 255, 0.7);
+      
+      @include respond-width('sm') {
+        font-size: 18rpx;
+      }
+    }
+  }
+}
+
+// 结果页响应式适配
+.result-page {
+  @include safe-area-padding-vertical;
+  min-height: 100vh;
+  
+  .result-container {
+    @include responsive-container;
+    padding-top: $spacing-xxl;
+    padding-bottom: $spacing-xxl;
+    
+    @include respond-width('sm') {
+      padding-top: $spacing-xl;
+      padding-bottom: $spacing-xl;
+    }
+  }
+  
+  .result-header {
+    text-align: center;
+    margin-bottom: $spacing-xxl;
+    
+    @include respond-width('sm') {
+      margin-bottom: $spacing-xl;
+    }
+    
+    .result-title {
+      @include responsive-title;
+      @include theme-title-hero;
+    }
+    
+    .result-subtitle {
+      @include responsive-text;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: $spacing-md;
+    }
+  }
+  
+  .fortune-card {
+    @include responsive-card;
+    @include theme-card;
+    margin-bottom: $spacing-xxl;
+    
+    @include respond-width('sm') {
+      margin-bottom: $spacing-xl;
+    }
+    
+    .fortune-text {
+      @include responsive-text;
+      font-family: $font-decorative;
+      color: $theme-text-primary;
+      text-align: center;
+      line-height: 1.8;
+      
+      @include respond-width('sm') {
+        line-height: 1.6;
+      }
+    }
+  }
+  
+  .action-buttons {
+    @include responsive-flex(row, $spacing-lg);
+    margin-bottom: $spacing-xl;
+    
+    @include respond-width('sm') {
+      gap: $spacing-md;
+      margin-bottom: $spacing-lg;
+    }
+    
+    .action-button {
+      @include responsive-button;
+      flex: 1;
+      border-radius: 50rpx;
+      
+      @include respond-width('sm') {
+        border-radius: 40rpx;
+      }
+    }
+  }
+}
+
+// 抽签按钮响应式适配
+.fortune-button {
+  width: 320rpx;
+  height: 320rpx;
+  
+  @include respond-width('sm') {
+    width: 280rpx;
+    height: 280rpx;
+  }
+  
+  @include respond-width('lg') {
+    width: 360rpx;
+    height: 360rpx;
+  }
+  
+  .button-content {
+    .button-text {
+      font-size: $font-size-large;
+      
+      @include respond-width('sm') {
+        font-size: $font-size-medium;
+      }
+      
+      @include respond-width('lg') {
+        font-size: $font-size-hero;
+      }
+    }
+    
+    .button-subtext {
+      font-size: $font-size-small;
+      
+      @include respond-width('sm') {
+        font-size: $font-size-mini;
+      }
+      
+      @include respond-width('lg') {
+        font-size: $font-size-medium;
+      }
+    }
+  }
+}
+
+// ==================== 横屏适配 ====================
+
+@include respond-landscape {
+  .home-page {
+    .home-header {
+      margin-bottom: $spacing-lg;
+      
+      .app-title {
+        font-size: 36rpx;
+      }
+    }
+    
+    .fortune-section {
+      padding: $spacing-md 0;
+    }
+    
+    .info-section {
+      margin-top: $spacing-md;
+    }
+  }
+  
+  .result-page {
+    .result-container {
+      padding-top: $spacing-lg;
+      padding-bottom: $spacing-lg;
+    }
+    
+    .result-header {
+      margin-bottom: $spacing-lg;
+      
+      .result-title {
+        font-size: 36rpx;
+      }
+    }
+    
+    .fortune-card {
+      margin-bottom: $spacing-lg;
+    }
+  }
+  
+  .fortune-button {
+    width: 240rpx;
+    height: 240rpx;
+  }
+}
+
+// ==================== 高DPI屏幕适配 ====================
+
+@include respond-dpr(2) {
+  .theme-card {
+    border-width: 2rpx;
+  }
+  
+  .fortune-button {
+    .decoration-ring {
+      border-width: 2rpx;
+    }
+  }
+}
+
+@include respond-dpr(3) {
+  .theme-card {
+    border-width: 1rpx;
+  }
+  
+  .fortune-button {
+    .decoration-ring {
+      border-width: 1rpx;
+    }
+  }
+}

@@ -1,0 +1,415 @@
+// 新年主题样式文件
+// 基于variables.scss的变量，定义具体的主题样式
+
+@import './variables.scss';
+
+// ==================== 响应式混合宏 ====================
+
+// 设备断点定义
+$device-xs: 320px;
+$device-sm: 375px;
+$device-md: 390px;
+$device-lg: 428px;
+$device-xl: 480px;
+
+// 通用响应式
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == 'xs' {
+    @media screen and (max-width: #{$device-xs}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'sm' {
+    @media screen and (max-width: #{$device-sm}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'md' {
+    @media screen and (min-width: #{$device-sm + 1px}) and (max-width: #{$device-lg}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'lg' {
+    @media screen and (min-width: #{$device-lg + 1px}) and (max-width: #{$device-xl}) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'xl' {
+    @media screen and (min-width: #{$device-xl + 1px}) {
+      @content;
+    }
+  }
+}
+
+// 宽度响应式
+@mixin respond-width($breakpoint) {
+  @include respond-to($breakpoint) {
+    @content;
+  }
+}
+
+// ==================== 新年主题色彩方案 ====================
+
+// 主色调配置（继承自variables.scss并扩展）
+$theme-primary: $primary-red;           // 主题主色：中国红
+$theme-secondary: $golden-yellow;       // 主题辅色：金黄色
+$theme-accent: $festive-orange;         // 强调色：节庆橙
+$theme-success: $lucky-green;           // 成功色：幸运绿
+$theme-text-primary: $deep-red;         // 主要文字色
+$theme-text-light: $warm-white;         // 浅色文字
+
+// 新年特色渐变
+$theme-gradient-main: $gradient-background;     // 主背景渐变
+$theme-gradient-button: $gradient-golden;       // 按钮渐变
+$theme-gradient-card: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 248, 231, 0.98) 100%);
+
+// 新年装饰色彩
+$decoration-gold: #FFD700;              // 装饰金色
+$decoration-red: #FF4757;               // 装饰红色
+$decoration-orange: #FF6B35;            // 装饰橙色
+$celebration-sparkle: #FFF700;          // 庆祝闪光色
+
+// ==================== 字体配置 ====================
+
+// 字体家族（继承并扩展）
+$theme-font-primary: $font-primary;     // 主要字体
+$theme-font-decorative: $font-decorative; // 装饰字体（楷体）
+$theme-font-title: 'STHeiti', 'SimHei', $font-primary; // 标题字体
+
+// 字体大小语义化
+$theme-font-hero: $font-size-hero;      // 英雄标题 48rpx
+$theme-font-title: $font-size-large;    // 页面标题 36rpx
+$theme-font-subtitle: $font-size-medium; // 副标题 28rpx
+$theme-font-body: $font-size-small;     // 正文 24rpx
+$theme-font-caption: $font-size-mini;   // 说明文字 20rpx
+
+// 字体权重
+$theme-font-weight-light: 300;
+$theme-font-weight-normal: 400;
+$theme-font-weight-medium: 500;
+$theme-font-weight-bold: 700;
+$theme-font-weight-heavy: 900;
+
+// ==================== 阴影和效果 ====================
+
+// 主题阴影
+$theme-shadow-light: 0 4px 16px rgba(255, 71, 87, 0.15);
+$theme-shadow-medium: $shadow-red;
+$theme-shadow-heavy: $shadow-deep;
+$theme-shadow-golden: $shadow-golden;
+
+// 发光效果
+$theme-glow-red: 0 0 20px rgba(255, 71, 87, 0.5);
+$theme-glow-golden: 0 0 20px rgba(255, 215, 0, 0.5);
+$theme-glow-celebration: 0 0 30px rgba(255, 247, 0, 0.7);
+
+// 文字阴影
+$theme-text-shadow-light: 1px 1px 4px rgba(0, 0, 0, 0.2);
+$theme-text-shadow-medium: 2px 2px 6px rgba(0, 0, 0, 0.3);
+$theme-text-shadow-heavy: 3px 3px 8px rgba(0, 0, 0, 0.4);
+
+// ==================== 动画配置 ====================
+
+// 动画时长
+$theme-animation-fast: $animation-fast;     // 0.2s
+$theme-animation-normal: $animation-normal; // 0.3s
+$theme-animation-slow: $animation-slow;     // 0.5s
+$theme-animation-celebration: 1.5s;         // 庆祝动画
+$theme-animation-float: 6s;                 // 浮动动画
+
+// 动画缓动函数
+$theme-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+$theme-ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$theme-ease-celebration: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+// ==================== 组件主题样式 ====================
+
+// 按钮主题
+@mixin theme-button-primary {
+  background: $theme-gradient-button;
+  color: $theme-text-primary;
+  box-shadow: $theme-shadow-golden;
+  border: none;
+  font-weight: $theme-font-weight-bold;
+  font-family: $theme-font-decorative;
+  
+  &:active {
+    transform: scale(0.95);
+    box-shadow: $theme-shadow-light;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    transform: none !important;
+  }
+}
+
+@mixin theme-button-secondary {
+  background: $theme-gradient-main;
+  color: $theme-text-light;
+  box-shadow: $theme-shadow-medium;
+  border: 2rpx solid $theme-secondary;
+  font-weight: $theme-font-weight-medium;
+  
+  &:active {
+    transform: scale(0.95);
+    box-shadow: $theme-shadow-light;
+  }
+}
+
+// 卡片主题
+@mixin theme-card {
+  background: $theme-gradient-card;
+  border-radius: $border-radius-xl;
+  box-shadow: $theme-shadow-heavy;
+  border: 4rpx solid $theme-secondary;
+  padding: $spacing-xl $spacing-lg;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2rpx;
+    left: -2rpx;
+    right: -2rpx;
+    bottom: -2rpx;
+    background: linear-gradient(45deg, $decoration-gold, $decoration-red, $decoration-orange);
+    border-radius: $border-radius-xl;
+    z-index: -1;
+    opacity: 0.3;
+  }
+}
+
+// 标题主题
+@mixin theme-title-hero {
+  font-size: $theme-font-hero;
+  font-weight: $theme-font-weight-bold;
+  color: $theme-text-light;
+  text-shadow: $theme-text-shadow-heavy;
+  font-family: $theme-font-decorative;
+  text-align: center;
+  line-height: 1.2;
+}
+
+@mixin theme-title-page {
+  font-size: $theme-font-title;
+  font-weight: $theme-font-weight-bold;
+  color: $theme-text-primary;
+  text-shadow: $theme-text-shadow-medium;
+  font-family: $theme-font-title;
+  text-align: center;
+  line-height: 1.3;
+}
+
+@mixin theme-text-decorative {
+  font-family: $theme-font-decorative;
+  font-weight: $theme-font-weight-medium;
+  color: $theme-secondary;
+  text-shadow: $theme-text-shadow-light;
+}
+
+// 装饰元素主题
+@mixin theme-decoration {
+  color: $decoration-gold;
+  text-shadow: $theme-glow-golden;
+  font-size: $theme-font-title;
+  animation: sparkle $theme-animation-celebration ease-in-out infinite;
+}
+
+// 背景主题
+@mixin theme-background-main {
+  background: $theme-gradient-main;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+@mixin theme-background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+// ==================== 动画关键帧 ====================
+
+// 闪烁动画
+@keyframes sparkle {
+  0%, 100% { 
+    opacity: 0.7; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.1); 
+  }
+}
+
+// 发光动画
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: $theme-shadow-golden; 
+  }
+  50% { 
+    box-shadow: $theme-glow-golden; 
+  }
+}
+
+// 浮动动画
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-20rpx) rotate(5deg);
+  }
+  66% {
+    transform: translateY(10rpx) rotate(-3deg);
+  }
+}
+
+// 庆祝动画
+@keyframes celebrate {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-30rpx) rotate(180deg);
+    opacity: 1;
+  }
+}
+
+// 脉冲动画
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale(1); 
+  }
+  50% { 
+    transform: scale(1.05); 
+  }
+}
+
+// 旋转动画
+@keyframes rotate {
+  from { 
+    transform: rotate(0deg); 
+  }
+  to { 
+    transform: rotate(360deg); 
+  }
+}
+
+// 弹跳动画
+@keyframes bounce {
+  0%, 80%, 100% { 
+    transform: scale(0); 
+  }
+  40% { 
+    transform: scale(1); 
+  }
+}
+
+// ==================== 工具类 ====================
+
+// 新年主题工具类
+.theme-bg-main {
+  @include theme-background-main;
+}
+
+.theme-bg-overlay {
+  @include theme-background-overlay;
+}
+
+.theme-card {
+  @include theme-card;
+}
+
+.theme-btn-primary {
+  @include theme-button-primary;
+}
+
+.theme-btn-secondary {
+  @include theme-button-secondary;
+}
+
+.theme-title-hero {
+  @include theme-title-hero;
+}
+
+.theme-title-page {
+  @include theme-title-page;
+}
+
+.theme-text-decorative {
+  @include theme-text-decorative;
+}
+
+.theme-decoration {
+  @include theme-decoration;
+}
+
+// 动画工具类
+.animate-sparkle {
+  animation: sparkle $theme-animation-celebration ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow $theme-animation-celebration ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float $theme-animation-float ease-in-out infinite;
+}
+
+.animate-celebrate {
+  animation: celebrate $theme-animation-celebration ease-in-out infinite;
+}
+
+.animate-pulse {
+  animation: pulse $theme-animation-celebration ease-in-out infinite;
+}
+
+.animate-rotate {
+  animation: rotate 8s linear infinite;
+}
+
+.animate-bounce {
+  animation: bounce 1.4s ease-in-out infinite both;
+}
+
+// 延迟动画类
+.animate-delay-1 { animation-delay: 0.5s; }
+.animate-delay-2 { animation-delay: 1s; }
+.animate-delay-3 { animation-delay: 1.5s; }
+.animate-delay-4 { animation-delay: 2s; }
+
+// ==================== 响应式主题调整 ====================
+
+// 小屏幕调整
+@include respond-to('sm') {
+  .theme-title-hero {
+    font-size: 40rpx;
+  }
+  
+  .theme-card {
+    padding: $spacing-lg $spacing-md;
+    margin: $spacing-md;
+  }
+}
+
+// 大屏幕调整
+@include respond-to('lg') {
+  .theme-title-hero {
+    font-size: 52rpx;
+  }
+  
+  .theme-card {
+    padding: $spacing-xxl $spacing-xl;
+    max-width: 750rpx;
+    margin: 0 auto;
+  }
+}
